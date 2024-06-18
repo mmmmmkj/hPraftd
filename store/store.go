@@ -18,8 +18,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/hashicorp/raft"
-	raftboltdb "github.com/hashicorp/raft-boltdb/v2"
+	raft "github.com/mmmmmkj/praft"
+	raftboltdb "github.com/mmmmmkj/raft-boltdb/v2"
 )
 
 const (
