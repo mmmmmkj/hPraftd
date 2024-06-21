@@ -112,6 +112,12 @@ func (s *Store) Open(enableSingle bool, localID string) error {
 					Address: transport.LocalAddr(),
 				},
 			},
+			ServersInGroup: []raft.Server{
+				{
+					ID:      config.LocalID,
+					Address: transport.LocalAddr(),
+				},
+			},
 		}
 		ra.BootstrapCluster(configuration)
 	}
