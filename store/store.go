@@ -112,7 +112,13 @@ func (s *Store) Open(enableSingle bool, localID string) error {
 		hexString := hash.Sum([]byte(config.LocalID))
 		tenInt, _ := strconv.Atoi(hex.EncodeToString(hexString))
 		groupId := uint64(tenInt) % 3
-
+		groupIdMap := make(map[uint64][]raft.Server)
+		groupIdMap[groupId] = []raft.Server{
+			{
+				ID:      config.LocalID,
+				Address: transport.LocalAddr(),
+			},
+		}
 		configuration := raft.Configuration{
 			Servers: []raft.Server{
 				{
@@ -120,14 +126,7 @@ func (s *Store) Open(enableSingle bool, localID string) error {
 					Address: transport.LocalAddr(),
 				},
 			},
-			ServersInGroup: map[uint64][]raft.Server{
-				groupId: {
-					{
-						ID:      config.LocalID,
-						Address: transport.LocalAddr(),
-					},
-				},
-			},
+			ServersInGroup: groupIdMap,
 		}
 		ra.BootstrapCluster(configuration)
 	}
