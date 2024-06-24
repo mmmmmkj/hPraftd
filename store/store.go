@@ -121,7 +121,7 @@ func (s *Store) Open(enableSingle bool, localID string) error {
 				},
 			},
 			ServersInGroup: map[uint64][]raft.Server{
-				groupId: []raft.Server{
+				groupId: {
 					{
 						ID:      config.LocalID,
 						Address: transport.LocalAddr(),
