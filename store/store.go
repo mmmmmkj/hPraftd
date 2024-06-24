@@ -8,6 +8,8 @@
 package store
 
 import (
+	"crypto/sha256"
+	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -15,6 +17,7 @@ import (
 	"net"
 	"os"
 	"path/filepath"
+	"strconv"
 	"sync"
 	"time"
 
@@ -105,6 +108,11 @@ func (s *Store) Open(enableSingle bool, localID string) error {
 	s.raft = ra
 
 	if enableSingle {
+		hash := sha256.New()
+		hexString := hash.Sum([]byte(config.LocalID))
+		tenInt, _ := strconv.Atoi(hex.EncodeToString(hexString))
+		groupId := uint64(tenInt) % 3
+
 		configuration := raft.Configuration{
 			Servers: []raft.Server{
 				{
@@ -112,10 +120,12 @@ func (s *Store) Open(enableSingle bool, localID string) error {
 					Address: transport.LocalAddr(),
 				},
 			},
-			ServersInGroup: []raft.Server{
-				{
-					ID:      config.LocalID,
-					Address: transport.LocalAddr(),
+			ServersInGroup: map[uint64][]raft.Server{
+				groupId: []raft.Server{
+					{
+						ID:      config.LocalID,
+						Address: transport.LocalAddr(),
+					},
 				},
 			},
 		}

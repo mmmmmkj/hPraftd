@@ -4,7 +4,7 @@ go 1.20
 
 require (
 	github.com/hashicorp/raft-boltdb/v2 v2.3.0
-	github.com/mmmmmkj/praft v1.5.0
+	github.com/mmmmmkj/praft v1.5.5
 )
 
 require (
